@@ -48,7 +48,8 @@ namespace SessionFlats
 
             //Connect to Voyager
             voyMan = new(userName, userPassword);
-
+            if (!voyMan.IsConnected)
+                this.Close();
             //var pollTest = voyMan.CmdResults("Polling");
 
             //VoyagerImageFolder.Text = "D:\\Voyager";

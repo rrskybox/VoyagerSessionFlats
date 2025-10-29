@@ -31,14 +31,14 @@ namespace SessionFlats
 
          public string PollServerCmd(string voyagerHostName)
         {
-            CommonEvent vent = new CommonEvent()
+            CommonEvent poll = new CommonEvent()
             {
                 Event = "Polling",
                 Timestamp = (int)DateTime.Now.Ticks,
                 Host = voyagerHostName,
                 Inst = 1
             };
-            return (JsonConvert.SerializeObject(vent));
+            return (JsonConvert.SerializeObject(poll));
         }
 
         public string AuthenticateConnectionCmd(string user, string password)

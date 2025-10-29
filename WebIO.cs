@@ -6,11 +6,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace SessionFlats
 {
     internal class WebIO
     {
+        public bool isConnected = false;
+
         private static readonly object lockObj = new object();
 
         //const string statURL = "mcwaimea.tplinkdns.com";
@@ -29,9 +32,15 @@ namespace SessionFlats
             var ipAddress = host.AddressList
                 .FirstOrDefault(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
             IPEndPoint ipEndPoint = new IPEndPoint(ipAddress, statPort);
-            VoyWeb.Connect(ipEndPoint);
+            try { VoyWeb.Connect(ipEndPoint); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Connection error: " + ex.Message);
+                isConnected = false;
+                return;
+            }
+            isConnected = true;
             VoyStream = VoyWeb.GetStream();
-
         }
 
         public dynamic ReadWebIO()
@@ -58,7 +67,7 @@ namespace SessionFlats
             }
         }
 
-          public void CloseConnection()
+        public void CloseConnection()
         {
             VoyStream.Close();
             VoyWeb.Close();

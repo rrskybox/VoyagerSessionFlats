@@ -13,17 +13,16 @@ namespace SessionFlats
 {
     internal class VoyManager
     {
-        WebIO voyWeb;
-        VoyCommand voyCmd;
-        VoyEvent voyEvnt;
+        private WebIO voyWeb;
+        private VoyCommand voyCmd;
+        private VoyEvent voyEvnt;
 
         public VoyManager(string userName, string userPassword)
         {
             string json;
-            dynamic cmdRsp;
             string responseData;
 
-            voyWeb = new();
+            //voyWeb = new();
             voyCmd = new();
             voyEvnt = new();
 
@@ -31,6 +30,11 @@ namespace SessionFlats
 
             //Connect
             voyWeb = new WebIO();
+            if (!voyWeb.isConnected)
+            {
+                lg.LogIt("Connection to Voyager failed");
+                return;
+            }
             responseData = voyWeb.ReadWebIO();
             List<dynamic> eventList1 = voyEvnt.VoyDeserializeAndCull(responseData);
             foreach (dynamic cmd in eventList1)
@@ -55,6 +59,8 @@ namespace SessionFlats
                     lg.LogIt(String.Format("Autorization failed {0}", cmd.error.message));
             }
         }
+
+        public bool IsConnected { get { return voyWeb.isConnected; } }
 
         public void Disconnect()
         {
@@ -176,7 +182,7 @@ namespace SessionFlats
             return Task.CompletedTask;
         }
 
-        public Task TimeOutGeneratorTask(int timeoutInSec, ref bool flag )
+        public Task TimeOutGeneratorTask(int timeoutInSec, ref bool flag)
         {
             flag = false;
             Thread.Sleep(timeoutInSec * 1000);
